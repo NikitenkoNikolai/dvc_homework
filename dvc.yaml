@@ -1,0 +1,37 @@
+stages:
+  prepare_dataset:
+    cmd: python src/stages/prepare_dataset.py
+    deps:
+    - src/stages/prepare_dataset.py
+    - src/config.yaml
+    outs:
+    - ./data/df_clear_homework.csv
+  data_split:
+    cmd: python src/stages/data_splite.py
+    deps:
+    - src/stages/data_splite.py
+    - src/config.yaml
+    - ./data/df_clear_homework.csv
+    outs:
+    - ./data/test_movies.csv
+    - ./data/train_movies.csv
+  train:
+    cmd: python src/stages/train.py
+    deps:
+    - src/config.yaml
+    - src/stages/train.py
+    - ./data/test_movies.csv
+    - ./data/train_movies.csv
+    outs:
+    - ./models/movies.joblib
+    - ./models/power.joblib
+  # test_model:
+  #   cmd: python src/stages/test_model.py
+  #   deps:
+  #   - src/config.yaml
+  #   - src/stages/test_model.py
+metrics:
+- dvclive/metrics.json
+plots:
+- dvclive/plots/metrics:
+    x: step
